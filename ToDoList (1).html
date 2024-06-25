@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('https://source.unsplash.com/1600x900/?nature,water') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1;
+            margin-right: 5px;
+        }
+        button:last-child {
+            margin-right: 0;
+        }
+        button.add { background: #4CAF50; color: white; }
+        button.reset { background: #f44336; color: white; }
+        button.sort { background: #00bcd4; color: white; }
+        button.cleanup { background: #ff9800; color: white; }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            background: #fff;
+            color: #000;
+        }
+        li.done {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Todo List</h1>
+        <input type="text" id="taskInput" placeholder="Enter the name of the task">
+        <div class="buttons">
+            <button class="add" onclick="addTask()">Add</button>
+            <button class="reset" onclick="resetList()">Reset</button>
+            <button class="sort" onclick="sortTasks()">Sort</button>
+            <button class="cleanup" onclick="cleanupTasks()">Cleanup</button>
+        </div>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskName = taskInput.value.trim();
+            if (taskName) {
+                const taskList = document.getElementById('taskList');
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${taskName}</span>
+                    <input type="checkbox" onclick="markDone(this)">
+                `;
+                taskList.appendChild(li);
+                taskInput.value = '';
+            }
+        }
+
+        function resetList() {
+            document.getElementById('taskList').innerHTML = '';
+        }
+
+        function sortTasks() {
+            const taskList = document.getElementById('taskList');
+            const tasks = Array.from(taskList.children);
+            tasks.sort((a, b) => {
+                const taskA = a.querySelector('span').innerText.toLowerCase();
+                const taskB = b.querySelector('span').innerText.toLowerCase();
+                return taskA.localeCompare(taskB);
+            });
+            taskList.innerHTML = '';
+            tasks.forEach(task => taskList.appendChild(task));
+        }
+
+        function cleanupTasks() {
+            const taskList = document.getElementById('taskList');
+            const tasks = Array.from(taskList.children);
+            tasks.forEach(task => {
+                if (task.classList.contains('done')) {
+                    taskList.removeChild(task);
+                }
+            });
+        }
+
+        function markDone(checkbox) {
+            const taskItem = checkbox.parentElement;
+            if (checkbox.checked) {
+                taskItem.classList.add('done');
+            } else {
+                taskItem.classList.remove('done');
+            }
+        }
+    </script>
+</body>
+</html>
